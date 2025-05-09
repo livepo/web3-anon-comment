@@ -4,13 +4,17 @@ import { WalletLoginBody } from 'types/auth';
 
 export async function walletLogin(
   ctx: TypedContext<WalletLoginBody>
-) {
+): Promise<{
+  status: number;
+  body: { message: string; user?: any };
+}> {
   const { walletAddress } = ctx.request.body;
 
   if (!walletAddress || !/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
-    ctx.status = 400;
-    ctx.body = { error: 'Invalid wallet address' };
-    return;
+    return {
+      status: 400,
+      body: { message: 'Invalid wallet address' },
+    };
   }
 
   const user = await prisma.user.upsert({
@@ -21,9 +25,11 @@ export async function walletLogin(
     },
   });
 
-  ctx.status = 200;
-  ctx.body = {
-    message: 'Login successful',
-    user,
+  return {
+    status: 200,
+    body: {
+      message: 'Login successful',
+      user,
+    },
   };
 }

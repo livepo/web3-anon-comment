@@ -7,13 +7,14 @@ const router = new Router({ prefix: '/auth' });
 
 router.use(bodyParser());
 
-router.post('/', async (ctx, next) => {
-  const body = ctx.request.body as WalletLoginBody; // Explicitly type the body
-  await Auth.walletLogin({
+router.post('/login', async (ctx) => {
+  const body = ctx.request.body as WalletLoginBody;
+  const result = await Auth.walletLogin({
     ...ctx,
     request: { ...ctx.request, body },
   });
-  await next();
+  ctx.status = result.status || 200; // Set the HTTP status code
+  ctx.body = result.body || { message: 'Login successful' }; // Set the response body
 });
 
 export default router;

@@ -6,7 +6,7 @@ import { CreateCommentBody } from 'types/comments';
 
 export async function createComment(
   ctx: TypedContext<CreateCommentBody>
-) {
+): Promise<{ status: number; body: any }> {
   const {
     content,
     ipfsHash,
@@ -53,7 +53,13 @@ export async function createComment(
     },
   });
 
-  ctx.body = comment;
+  return {
+    status: 201,
+    body: {
+      message: '评论成功',
+      comment,
+    },
+  };
 }
 
 export async function listComments(ctx: Context) {

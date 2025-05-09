@@ -9,11 +9,14 @@ router.use(bodyParser());
 
 router.post('/', async (ctx, next) => {
   const body = ctx.request.body as CreateCommentBody; // Explicitly type the body
-  await Comments.createComment({
+  const result = await Comments.createComment({
     ...ctx,
     request: { ...ctx.request, body },
   });
-  await next();
+  ctx.status = result.status || 200; // Set the HTTP status code
+  ctx.body = result.body || {
+    message: 'Comment created successfully',
+  }; // Set the response body
 });
 
 router.get('/', Comments.listComments);

@@ -1,7 +1,7 @@
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import commentRoutes from './backend/routes/comments';
-import authRoutes from './backend/routes/login';
+import authRoutes from './backend/routes/auth';
 
 const app = new Koa();
 app.use(bodyParser());
