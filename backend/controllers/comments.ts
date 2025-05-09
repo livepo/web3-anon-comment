@@ -113,7 +113,7 @@ export async function getCommentsByTag(
   if (!tagId) {
     return {
       status: 400,
-      body: { error: 'tagId is required' }, // 返回错误信息
+      body: { message: 'tagId is required' }, // 返回错误信息
     };
   }
 

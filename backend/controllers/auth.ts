@@ -3,6 +3,10 @@ import prisma from '../models/client';
 import { VerifyBody, WalletLoginBody } from 'types/auth';
 import { Context } from 'koa';
 import { ethers } from 'ethers';
+import jwt, { SignOptions } from 'jsonwebtoken';
+
+const JWT_SECRET: string = process.env.JWT_SECRET!;
+const JWT_EXPIRES_IN: string = process.env.JWT_EXPIRES_IN || '7d';
 
 export async function walletLogin(
   ctx: TypedContext<WalletLoginBody>
@@ -71,7 +75,7 @@ export async function verifySignature(
   ctx: TypedContext<VerifyBody>
 ): Promise<{
   status: number;
-  body: { message: string; user?: any };
+  body: { message: string; token?: string; user?: any };
 }> {
   const { walletAddress, signature } = ctx.request.body;
 
@@ -103,14 +107,20 @@ export async function verifySignature(
       data: { nonce: crypto.randomUUID() },
     });
 
-    ctx.body = {
-      message: 'Login verified',
-      user: updated,
-    };
+    const token = jwt.sign(
+      {
+        userId: updated.id,
+        walletAddress: updated.walletAddress,
+      },
+      JWT_SECRET,
+      { expiresIn: JWT_EXPIRES_IN } as SignOptions
+    );
+
     return {
       status: 200,
       body: {
         message: 'Login verified',
+        token,
         user: updated,
       }, // Return the updated user
     };
