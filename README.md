@@ -76,3 +76,5 @@ export DATABASE_URL="mysql://root:123456@127.0.0.1:3306/web3anoncomment";
 npx ts-node server.ts # 后端
 # 前端: TODO
 ```
+
+TODO: replayService.ts, 服务启动时，从区块链、ipfs重放数据到数据库
