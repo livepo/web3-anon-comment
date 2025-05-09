@@ -67,3 +67,12 @@ web3-anon-comment/
 | 后端 API | Node.js (Koa/Express) + MongoDB/PostgreSQL |
 | 登录认证   | SIWE（Sign-In With Ethereum）标准              |
 | 区块链平台  | Polygon / Arbitrum（主网或测试网）                 |
+
+### 运行
+```bash
+export JWT_EXPIRES_IN=7d;
+export JWT_SECRET=your-very-secret-key;
+export DATABASE_URL="mysql://root:123456@127.0.0.1:3306/web3anoncomment";
+npx ts-node server.ts # 后端
+# 前端: TODO
+```
