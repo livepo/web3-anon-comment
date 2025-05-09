@@ -7,6 +7,7 @@ const router = new Router({ prefix: '/auth' });
 
 router.use(bodyParser());
 
+// Decprecated: Use the new endpoint
 router.post('/login', async (ctx) => {
   const body = ctx.request.body as WalletLoginBody;
   const result = await Auth.walletLogin({
