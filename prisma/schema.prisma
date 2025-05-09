@@ -9,12 +9,12 @@ generator client {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  wallet    String    @unique
-  ensName   String? // ENS 可选昵称
-  createdAt DateTime  @default(now())
-  comments  Comment[]
-  votes     Vote[]
+  id            String    @id @default(uuid())
+  walletAddress String    @unique
+  ensName       String? // ENS 可选昵称
+  createdAt     DateTime  @default(now())
+  comments      Comment[]
+  votes         Vote[]
 }
 
 model Comment {
@@ -72,11 +72,11 @@ model Vote {
 }
 
 model Session {
-  id        String   @id @default(uuid())
-  wallet    String
-  nonce     String
-  expiresAt DateTime
-  createdAt DateTime @default(now())
+  id            String   @id @default(uuid())
+  walletAddress String
+  nonce         String
+  expiresAt     DateTime
+  createdAt     DateTime @default(now())
 
-  @@index([wallet])
+  @@index([walletAddress])
 }
