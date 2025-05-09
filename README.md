@@ -72,9 +72,13 @@ web3-anon-comment/
 ```bash
 export JWT_EXPIRES_IN=7d;
 export JWT_SECRET=your-very-secret-key;
-export DATABASE_URL="mysql://root:123456@127.0.0.1:3306/web3anoncomment";
+export DATABASE_URL="mysql://root:12345678@127.0.0.1:3306/web3anoncomment";
 npx ts-node server.ts # 后端
 # 前端: TODO
 ```
 
 TODO: replayService.ts, 服务启动时，从区块链、ipfs重放数据到数据库
+TODO: 编写并测试 Solidity 合约（如 Hardhat）
+TODO: 编译并部署到链上（测试网）
+TODO: 提供前端/Node.js 脚本上传 IPFS 并调用合约方法
+TODO: 实现链上事件监听 & 数据同步
