@@ -71,13 +71,3 @@ model Vote {
 
   @@unique([userId, commentId])
 }
-
-model Session {
-  id            String   @id @default(uuid())
-  walletAddress String
-  nonce         String
-  expiresAt     DateTime
-  createdAt     DateTime @default(now())
-
-  @@index([walletAddress])
-}

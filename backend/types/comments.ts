@@ -6,3 +6,8 @@ export interface CreateCommentBody {
   parentId?: string;
   tagNames?: string[];
 }
+
+export interface VoteBody {
+  commentId: string;
+  userId: string;
+}

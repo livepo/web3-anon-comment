@@ -2,7 +2,7 @@
 import prisma from '../models/client';
 import { Context } from 'koa';
 import { TypedContext } from '../types/koa-context';
-import { CreateCommentBody } from 'types/comments';
+import { CreateCommentBody, VoteBody } from 'types/comments';
 
 export async function createComment(
   ctx: TypedContext<CreateCommentBody>
@@ -100,4 +100,110 @@ export async function getThread(ctx: Context) {
   });
 
   ctx.body = comments;
+}
+
+export async function getCommentsByTag(
+  ctx: Context
+): Promise<{ status: number; body: any }> {
+  const tagId = ctx.query.tagId?.toString();
+  const sortBy = ctx.query.sortBy?.toString() || 'latest'; // 'latest' or 'hot'
+  const page = parseInt(ctx.query.page?.toString() || '1');
+  const pageSize = parseInt(ctx.query.pageSize?.toString() || '10');
+
+  if (!tagId) {
+    return {
+      status: 400,
+      body: { error: 'tagId is required' }, // 返回错误信息
+    };
+  }
+
+  const comments = await prisma.comment.findMany({
+    where: {
+      tags: {
+        some: {
+          id: tagId,
+        },
+      },
+      parentId: null, // 只返回主评论（不嵌套）
+    },
+    orderBy:
+      sortBy === 'hot'
+        ? { likesCount: 'desc' }
+        : { createdAt: 'desc' },
+    skip: (page - 1) * pageSize,
+    take: pageSize,
+    include: {
+      tags: true,
+      _count: { select: { replies: true } },
+    },
+  });
+  return {
+    status: 200,
+    body: {
+      comments,
+      page,
+      pageSize,
+    },
+  };
+}
+
+export async function toggleLike(
+  ctx: TypedContext<VoteBody>
+): Promise<{ status: number; body: any }> {
+  const { commentId, userId } = ctx.request.body;
+
+  if (!commentId || !userId) {
+    return {
+      status: 400,
+      body: { message: 'commentId and userId are required' },
+    };
+  }
+
+  const existingVote = await prisma.vote.findUnique({
+    where: {
+      userId_commentId: { userId, commentId },
+    },
+  });
+
+  if (existingVote) {
+    // 已点赞 → 取消点赞
+    await prisma.$transaction([
+      prisma.vote.delete({
+        where: { userId_commentId: { userId, commentId } },
+      }),
+      prisma.comment.update({
+        where: { id: commentId },
+        data: {
+          likesCount: {
+            decrement: 1,
+          },
+        },
+      }),
+    ]);
+
+    return {
+      status: 200,
+      body: { message: 'Like removed', liked: false },
+    };
+  } else {
+    // 未点赞 → 点赞
+    await prisma.$transaction([
+      prisma.vote.create({
+        data: { userId, commentId },
+      }),
+      prisma.comment.update({
+        where: { id: commentId },
+        data: {
+          likesCount: {
+            increment: 1,
+          },
+        },
+      }),
+    ]);
+
+    return {
+      status: 200,
+      body: { message: 'Liked', liked: true },
+    };
+  }
 }
