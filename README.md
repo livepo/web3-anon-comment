@@ -2,7 +2,7 @@
 目标：发帖内容 hash 上链 + 投票打赏
 
 ### 架构
-```css
+```
    [ 用户浏览器 ]
         │
         ▼
@@ -16,7 +16,7 @@ MetaMask / WalletConnect     IPFS  ←→ 评论内容
 ```
 
 ### 项目结构
-```bash
+```
 web3-anon-comment/
 ├── contracts/               # Solidity 智能合约
 │   └── CommentStorage.sol

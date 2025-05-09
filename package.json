@@ -1,8 +1,14 @@
 {
   "devDependencies": {
-    "prisma": "^6.7.0"
+    "@types/koa-bodyparser": "^4.3.12",
+    "@types/koa-router": "^7.4.8",
+    "prisma": "^6.7.0",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@prisma/client": "^6.7.0"
+    "@prisma/client": "^6.7.0",
+    "koa": "^3.0.0",
+    "koa-bodyparser": "^4.4.1",
+    "koa-router": "^13.0.1"
   }
 }
