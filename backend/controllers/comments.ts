@@ -3,6 +3,7 @@ import prisma from '../models/client';
 import { Context } from 'koa';
 import { TypedContext } from '../types/koa-context';
 import { CreateCommentBody, VoteBody } from 'types/comments';
+import contract from 'services/contract';
 
 export async function createComment(
   ctx: TypedContext<CreateCommentBody>
@@ -52,6 +53,13 @@ export async function createComment(
       },
     },
   });
+
+  const tx = await contract.postComment(ipfsHash, parentId, tagNames);
+  const receipt = await tx.wait();
+  if (receipt.status !== 1) {
+    ctx.throw(500, '链上交易失败');
+  }
+  console.log('链上交易成功', receipt.transactionHash);
 
   return {
     status: 201,
@@ -181,6 +189,13 @@ export async function toggleLike(
       }),
     ]);
 
+    const tx = await contract.vote(commentId, false);
+    const receipt = await tx.wait();
+    if (receipt.status !== 1) {
+      ctx.throw(500, '链上交易失败');
+    }
+    console.log('链上交易成功', receipt.transactionHash);
+
     return {
       status: 200,
       body: { message: 'Like removed', liked: false },
@@ -200,6 +215,13 @@ export async function toggleLike(
         },
       }),
     ]);
+
+    const tx = await contract.vote(commentId, true);
+    const receipt = await tx.wait();
+    if (receipt.status !== 1) {
+      ctx.throw(500, '链上交易失败');
+    }
+    console.log('链上交易成功', receipt.transactionHash);
 
     return {
       status: 200,
