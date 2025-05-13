@@ -3,7 +3,7 @@ import prisma from '../models/client';
 import { Context } from 'koa';
 import { TypedContext } from '../types/koa-context';
 import { CreateCommentBody, VoteBody } from 'types/comments';
-import contract from 'services/contract';
+import contract from '../services/contract';
 
 export async function createComment(
   ctx: TypedContext<CreateCommentBody>
