@@ -18,5 +18,13 @@
     "koa-bodyparser": "^4.4.1",
     "koa-router": "^13.0.1",
     "ts-node": "^10.9.2"
+  },
+  "scripts": {
+    "dev": "ts-node --esm --transpile-only server.ts",
+    "build": "tsc --build",
+    "migrate": "prisma migrate dev",
+    "generate": "prisma generate",
+    "format": "prettier --write .",
+    "lint": "eslint . --ext .ts"
   }
 }
